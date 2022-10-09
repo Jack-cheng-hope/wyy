@@ -1,30 +1,41 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <router-view></router-view>
+  <FooterMusical v-show="$store.state.isShowFooterBar" />
+  <Nav v-show="$store.state.isShowFooterBar" />
 </template>
+<script>
+import FooterMusical from "./views/FooterMusical";
+import Nav from "./views/Nav.vue";
 
+export default {
+  components: { FooterMusical, Nav },
+  created() {
+    window.addEventListener("beforeunload", () => {
+      console.log("123");
+      sessionStorage.removeItem("store");
+      sessionStorage.setItem("store", JSON.stringify(this.$store.state));
+      console.log("456");
+    });
+    // console.log(store, "newstore");
+
+    this.$store.replaceState(
+      Object.assign(
+        {},
+        this.$store.state,
+        JSON.parse(sessionStorage.getItem("store"))
+      )
+    );
+  },
+};
+</script>
 <style lang="less">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+.icon {
+  width: 0.5rem;
+  height: 0.5rem;
 }
 </style>
